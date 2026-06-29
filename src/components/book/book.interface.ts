@@ -1,3 +1,5 @@
+import { Model } from "mongoose";
+
 export interface IReview {
   userId: string;
   userName: string;
@@ -20,3 +22,5 @@ export interface IBook {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type BookModel = Model<IBook, Record<string, unknown>>;
