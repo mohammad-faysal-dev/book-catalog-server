@@ -13,7 +13,7 @@ const getAllBooks = async (req: Request, res: Response) => {
 
 const getSingleBook = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const result = await BookService.getSingleBook(id);
+  const result = await BookService.getSingleBook(id as string);
   res.json({
     statusCode: 200,
     success: true,
