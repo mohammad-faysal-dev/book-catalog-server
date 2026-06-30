@@ -1,16 +1,20 @@
-import mongoose, { Schema } from "mongoose";
-import { BookModel, IBook, IReview } from "./book.interface";
+import { Schema, model } from 'mongoose';
+import { BookModel, IBook, IReview } from './book.interface';
 
 const reviewSchema = new Schema<IReview>(
   {
     userId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     userName: {
       type: String,
       required: true,
-      trim: true,
+    },
+    comment: {
+      type: String,
+      required: true,
     },
     rating: {
       type: Number,
@@ -18,82 +22,60 @@ const reviewSchema = new Schema<IReview>(
       min: 1,
       max: 5,
     },
-    comment: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
-    _id: true,
+    timestamps: { createdAt: true, updatedAt: false },
   },
 );
 
-const BookSchema = new Schema<IBook>(
+const bookSchema = new Schema<IBook, BookModel>(
   {
     title: {
       type: String,
       required: true,
       trim: true,
-      index: true,
     },
     author: {
       type: String,
       required: true,
       trim: true,
-      index: true,
     },
     genre: {
       type: String,
       required: true,
       trim: true,
-      index: true,
     },
     publicationDate: {
       type: Date,
       required: true,
-      index: true,
-    },
-    coverImage: {
-      type: String,
-      trim: true,
     },
     description: {
       type: String,
-      trim: true,
+      default: '',
     },
-    isbn: {
+    imageUrl: {
       type: String,
-      trim: true,
-      unique: true,
-      sparse: true,
-      uppercase: true,
+      default: '',
+    },
+    addedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
     reviews: {
       type: [reviewSchema],
       default: [],
     },
-    averageRating: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5,
-    },
-    totalReviews: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toJSON: {
+      virtuals: true,
+    },
   },
 );
 
-export const Book = mongoose.model<IBook, BookModel>("Book", BookSchema);
+// text index for efficient search by title/author/genre
+bookSchema.index({ title: 'text', author: 'text', genre: 'text' });
+
+export const Book = model<IBook, BookModel>('Book', bookSchema);

@@ -1,26 +1,22 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
-export interface IReview {
-  userId: string;
+export type IReview = {
+  userId: Types.ObjectId;
   userName: string;
-  rating: number;
   comment: string;
-  createdAt: Date;
-}
+  rating: number;
+  createdAt?: Date;
+};
 
-export interface IBook {
+export type IBook = {
   title: string;
   author: string;
   genre: string;
-  publicationDate: Date;
-  coverImage?: string;
+  publicationDate: Date | string;
   description?: string;
-  isbn?: string;
-  reviews: IReview[];
-  averageRating: number;
-  totalReviews: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
+  imageUrl?: string;
+  addedBy: Types.ObjectId;
+  reviews?: IReview[];
+};
 
 export type BookModel = Model<IBook, Record<string, unknown>>;
