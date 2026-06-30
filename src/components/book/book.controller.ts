@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { BookService } from "./book.service";
+import { success } from "zod";
 
 const createBook = async (req: Request, res: Response) => {
   const { ...bookData } = req.body;
@@ -33,8 +34,19 @@ const getSingleBook = async (req: Request, res: Response) => {
   });
 };
 
+const updateBook = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const result = await BookService.updateBook(id, req.body);
+  res.json({
+    statusCode: 200,
+    success: true,
+    message: "Updated books updated successful",
+    data: result,
+  });
+};
 export const BooksController = {
   getAllBooks,
   getSingleBook,
-  createBook
+  createBook,
+  updateBook,
 };
